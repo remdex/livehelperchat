@@ -172,10 +172,10 @@ var lh_inst  = {
 	min : function(initial) {
 
         // If it's proactive invitation hide instead to avoid reopening.
-        if (this.isProactivePending == 1) {
-           this.hide();
-           return;
-        }
+        //if (this.isProactivePending == 1) {
+           //this.hide();
+           //return;
+        //}
 
 		var dm = document.getElementById('<?php echo $chatCSSLayoutOptions['container_id']?>');
 
@@ -275,6 +275,7 @@ var lh_inst  = {
                 this.removeCookieAttr('hash');
                 this.iframe_html = null;
                 this.iframePreloaded = false;
+                this.chat_started = false;
 
                 // Give time for cookie to be removed
                 setTimeout(function(){
@@ -637,7 +638,7 @@ var lh_inst  = {
     },
 
     startNewMessageCheckSingle : function() {
-        if (!lh_inst.cookieData.hash) {
+        if (!lh_inst.cookieData.hash || (typeof lh_inst.cookieData.prl !== 'undefined' && lh_inst.cookieData.prl == '1')) {
             var vid = this.cookieDataPers.vid;
             lh_inst.removeById('lhc_operator_message');
             var th = document.getElementsByTagName('head')[0];
@@ -1046,6 +1047,9 @@ var lh_inst  = {
     		}
 
     		iframeContainer.className = iframeContainer.className;
+    	} else if (action == 'lhc_chat') {
+            lh_inst.removeCookieAttr('prl');
+            lh_inst.iframePreloaded = false;
     	} else if (action == 'lhc_ch') {
     		var parts = e.data.split(':');
     		if (parts[1] != '' && parts[2] != '') {
@@ -1053,6 +1057,9 @@ var lh_inst  = {
     			if (parts[1] == 'hash') {
                     lh_inst.chat_started = true;
     			}
+                if (parts[1] == 'prl') {
+                    lh_inst.chat_started = false;
+                }
     		}
     	} else if (action == 'lhc_open_restore') {
     		lh_inst.lh_openchatWindow();
@@ -1155,7 +1162,9 @@ function preloadDataLHC() {
 
         lh_inst.showStatusWidget();
 
-        if (lh_inst.cookieData.hash) {
+        var canPreload = false;
+
+        if (lh_inst.cookieData.hash && (typeof lh_inst.cookieData.prl === 'undefined' || lh_inst.cookieData.prl == '0')) {
         lh_inst.stopCheckNewMessage();
         lh_inst.substatus = '_reopen';
         lh_inst.toggleStatusWidget(true);
@@ -1168,19 +1177,13 @@ function preloadDataLHC() {
             lh_inst.preloadWidget();
         }
 
-        <?php /*if ($check_operator_messages == 'true' && $disable_pro_active == false && $disable_online_tracking == false) : ?>
-            if (!lh_inst.cookieData.hash) {
-            lh_inst.startNewMessageCheck();
-            lh_inst.online_tracked = true;
-            }
-        <?php endif;*/ ?>
-
         <?php if ($disable_pro_active == false && $track_online_users == true && $disable_online_tracking == false) : ?>
-            if (!lh_inst.cookieData.hash) {
+            if (!lh_inst.cookieData.hash || (typeof lh_inst.cookieData.prl !== 'undefined' && lh_inst.cookieData.prl == '1')) {
             lh_inst.startNewMessageCheckSingle();
             lh_inst.online_tracked = true;
             }
         <?php endif;?>
+
 
         <?php if ($trackOnline == true && $disable_online_tracking == false) : ?>
             if (lh_inst.online_tracked == false) {

@@ -35,9 +35,11 @@ class erLhcoreClassGenericBotActionCommand {
                 $chat->status = erLhcoreClassModelChat::STATUS_PENDING_CHAT;
                 $chat->status_sub_sub = 2; // Will be used to indicate that we have to show notification for this chat if it appears on list
                 $chat->pnd_time = time();
-                // We do not have to set this
-                // Because it triggers auto responder of not replying
-                // $chat->last_op_msg_time = time();
+
+                // Because bot could not handle chat make it as initiator default chat
+                $chat->chat_initiator = erLhcoreClassModelChat::CHAT_INITIATOR_DEFAULT;
+
+                $chat->last_op_msg_time = $chat->pnd_time;
                 $chat->saveThis();
 
                 $handler = erLhcoreClassChatEventDispatcher::getInstance()->dispatch('chat.genericbot_chat_command_transfer', array(
@@ -85,8 +87,7 @@ class erLhcoreClassGenericBotActionCommand {
             }
         } elseif ($action['content']['command'] == 'closechat') {
 
-            $chat->pnd_time = time();
-            $chat->last_op_msg_time = time();
+            $chat->pnd_time = $chat->last_op_msg_time = time();
 
             $handler = erLhcoreClassChatEventDispatcher::getInstance()->dispatch('chat.genericbot_chat_command_transfer', array(
                 'action' => $action,

@@ -94,7 +94,7 @@ class NodeGroup extends Component {
                         <div className="col-9">
                             <div className="input-group">
                                 <div className="input-group-prepend">
-                                    <span><i className={classNameCurrent} title={'Bot Id - '+this.props.group.get('bot_id')}>home</i></span>
+                                    <span><i className={classNameCurrent} title={'Bot Id - '+this.props.group.get('bot_id')}>&#xf2dc;</i></span>
                                 </div>
                                 <input className="form-control form-control-sm gbot-group-name" value={this.props.group.get('name')} onChange={this.handleChange.bind(this)} />
                             </div>
@@ -102,7 +102,7 @@ class NodeGroup extends Component {
                         <div className="col-3">
                             <div className="btn-group" role="group" aria-label="Basic example">
                                 <a className="btn btn-sm btn-secondary float-right" href={WWW_DIR_JAVASCRIPT + "genericbot/downloadbotgroup/" + this.props.group.get('id')}><i className="material-icons mr-0">cloud_download</i></a>
-                                <button className="btn btn-sm btn-danger float-right" onClick={this.deleteGroup.bind(this)}><i className="material-icons mr-0">delete</i></button>
+                                <button className="btn btn-sm btn-danger float-right" onClick={this.deleteGroup.bind(this)}><i className="material-icons mr-0">&#xf1c0;</i></button>
                             </div>
                         </div>
                     </div>
@@ -111,7 +111,7 @@ class NodeGroup extends Component {
                         <div className="col-12">
                             <ul className="gbot-trglist">
                                 {mappedNodeGroupTriggers}
-                                <li><button className="btn btn-sm btn-secondary" onClick={this.addTrigger.bind(this)} ><i className="material-icons mr-0">add</i></button></li>
+                                <li><button className="btn btn-sm btn-secondary" onClick={this.addTrigger.bind(this)} ><i className="material-icons mr-0">&#xf415;</i></button></li>
                             </ul>
                         </div>
                     </div>

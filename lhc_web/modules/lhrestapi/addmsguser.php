@@ -63,7 +63,7 @@ if ($form->hasValidData( 'msg' ) && trim($form->msg) != '' && trim(str_replace('
             $stmt = $db->prepare('UPDATE lh_chat SET last_user_msg_time = :last_user_msg_time, lsync = :lsync, last_msg_id = :last_msg_id, has_unread_messages = 1, unanswered_chat = :unanswered_chat WHERE id = :id');
             $stmt->bindValue(':id', $chat->id, PDO::PARAM_INT);
             $stmt->bindValue(':lsync', time(), PDO::PARAM_INT);
-            $stmt->bindValue(':last_user_msg_time', $msg->time, PDO::PARAM_INT);
+            $stmt->bindValue(':last_user_msg_time', ($chat->last_op_msg_time > 0 ? $msg->time : 0), PDO::PARAM_INT);
             $stmt->bindValue(':unanswered_chat',($chat->status == erLhcoreClassModelChat::STATUS_PENDING_CHAT ? 1 : 0), PDO::PARAM_INT);
 
             // Set last message ID
@@ -92,7 +92,7 @@ if ($form->hasValidData( 'msg' ) && trim($form->msg) != '' && trim(str_replace('
         {
             // Invitation...
             // We have to apply proactive invitation rules
-            if ($chat->chat_initiator == erLhcoreClassModelChat::CHAT_INITIATOR_PROACTIVE && $chat->online_user !== false && $chat->online_user->invitation !== false) {
+            if (in_array($chat->chat_initiator,array(erLhcoreClassModelChat::CHAT_INITIATOR_PROACTIVE,erLhcoreClassModelChat::CHAT_INITIATOR_BOT)) && $chat->online_user !== false && $chat->online_user->invitation !== false) {
 
                 if ($chat->online_user->invitation->wait_message != '') {
                     $msg = new erLhcoreClassModelmsg();
